@@ -1,18 +1,37 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState
+} from "react";
 
-const API = import.meta.env.VITE_API_URL;
+import {
+  Search,
+  Trash2,
+  Users,
+  ShieldCheck,
+  Activity,
+} from "lucide-react";
+
+const API =
+  import.meta.env.VITE_API_URL;
 
 export default function Students() {
 
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] =
+    useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
-  const [error, setError] = useState("");
+  const [error, setError] =
+    useState("");
 
-  // =========================================
+  const [search, setSearch] =
+    useState("");
+
+  // =====================================
   // FETCH STUDENTS
-  // =========================================
+  // =====================================
 
   const fetchStudents = async () => {
 
@@ -32,12 +51,8 @@ export default function Students() {
 
       }
 
-      const data = await response.json();
-
-      console.log(
-        "Students API:",
-        data
-      );
+      const data =
+        await response.json();
 
       if (Array.isArray(data)) {
 
@@ -65,15 +80,16 @@ export default function Students() {
 
   };
 
-  // =========================================
+  // =====================================
   // DELETE STUDENT
-  // =========================================
+  // =====================================
 
   const deleteStudent = async (id) => {
 
-    const confirmDelete = window.confirm(
-      "Delete this student?"
-    );
+    const confirmDelete =
+      window.confirm(
+        "Delete this student?"
+      );
 
     if (!confirmDelete) return;
 
@@ -111,9 +127,9 @@ export default function Students() {
 
   };
 
-  // =========================================
-  // LOAD DATA
-  // =========================================
+  // =====================================
+  // LOAD
+  // =====================================
 
   useEffect(() => {
 
@@ -121,15 +137,33 @@ export default function Students() {
 
   }, []);
 
-  // =========================================
+  // =====================================
+  // FILTER
+  // =====================================
+
+  const filteredStudents =
+    useMemo(() => {
+
+      return students.filter(
+        (student) =>
+          student.name
+            .toLowerCase()
+            .includes(
+              search.toLowerCase()
+            )
+      );
+
+    }, [students, search]);
+
+  // =====================================
   // LOADING
-  // =========================================
+  // =====================================
 
   if (loading) {
 
     return (
 
-      <div className="min-h-screen bg-black text-white flex items-center justify-center text-3xl font-bold">
+      <div className="min-h-screen bg-[#06070A] text-white flex items-center justify-center text-3xl font-semibold">
 
         Loading Students...
 
@@ -139,15 +173,15 @@ export default function Students() {
 
   }
 
-  // =========================================
+  // =====================================
   // ERROR
-  // =========================================
+  // =====================================
 
   if (error) {
 
     return (
 
-      <div className="min-h-screen bg-black text-red-500 flex items-center justify-center text-2xl font-bold">
+      <div className="min-h-screen bg-[#06070A] text-red-400 flex items-center justify-center text-2xl font-semibold">
 
         {error}
 
@@ -157,162 +191,393 @@ export default function Students() {
 
   }
 
-  // =========================================
+  // =====================================
   // MAIN UI
-  // =========================================
+  // =====================================
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-6 md:p-10">
+    <div className="relative min-h-screen bg-[#06070A] text-white overflow-hidden">
 
-      {/* ================================= */}
-      {/* HEADER */}
-      {/* ================================= */}
+      {/* BACKGROUND */}
 
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
+      <div className="absolute inset-0 pointer-events-none -z-10">
 
-        <div>
+        <div className="absolute top-[-250px] left-[-150px] w-[500px] h-[500px] bg-cyan-500/10 blur-[160px]" />
 
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-
-            Registered Students
-
-          </h1>
-
-          <p className="text-gray-400 mt-2 text-lg">
-
-            Manage enrolled students
-
-          </p>
-
-        </div>
-
-        <div className="bg-zinc-900 border border-zinc-800 px-6 py-5 rounded-3xl w-fit">
-
-          <p className="text-gray-400 text-sm">
-
-            Total Students
-
-          </p>
-
-          <h2 className="text-4xl font-bold mt-1">
-
-            {students.length}
-
-          </h2>
-
-        </div>
+        <div className="absolute bottom-[-250px] right-[-150px] w-[500px] h-[500px] bg-violet-500/10 blur-[160px]" />
 
       </div>
 
-      {/* ================================= */}
-      {/* EMPTY STATE */}
-      {/* ================================= */}
+      {/* CONTENT */}
 
-      {students.length === 0 ? (
+      <div className="p-6 lg:p-10">
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-10 text-center">
+        {/* HEADER */}
 
-          <h2 className="text-3xl font-bold">
+        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 mb-10">
 
-            No Students Registered
+          <div>
 
-          </h2>
+            <p className="uppercase tracking-[0.3em] text-zinc-500 text-xs mb-3">
 
-          <p className="text-gray-400 mt-3">
+              Biometric Registry
 
-            Register students to see them here
+            </p>
 
-          </p>
+            <h1 className="text-5xl font-semibold tracking-tight">
+
+              Registered Students
+
+            </h1>
+
+            <p className="text-zinc-500 text-lg mt-4 max-w-2xl">
+
+              Manage enrolled students and
+              monitor biometric identity records.
+
+            </p>
+
+          </div>
+
+          {/* STATS */}
+
+          <div className="grid grid-cols-3 gap-4">
+
+            <div className="bg-white/[0.03] rounded-3xl p-5 min-w-[150px]">
+
+              <p className="text-zinc-500 text-sm">
+
+                Students
+
+              </p>
+
+              <h2 className="text-4xl font-semibold mt-3">
+
+                {students.length}
+
+              </h2>
+
+            </div>
+
+            <div className="bg-white/[0.03] rounded-3xl p-5 min-w-[150px]">
+
+              <p className="text-zinc-500 text-sm">
+
+                Active
+
+              </p>
+
+              <h2 className="text-4xl font-semibold mt-3 text-emerald-400">
+
+                {students.length}
+
+              </h2>
+
+            </div>
+
+            <div className="bg-white/[0.03] rounded-3xl p-5 min-w-[150px]">
+
+              <p className="text-zinc-500 text-sm">
+
+                Status
+
+              </p>
+
+              <h2 className="text-2xl font-semibold mt-5 text-cyan-400">
+
+                Online
+
+              </h2>
+
+            </div>
+
+          </div>
 
         </div>
 
-      ) : (
+        {/* TERMINAL */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="bg-white/[0.03] rounded-[34px] overflow-hidden backdrop-blur-2xl">
 
-          {students.map((student) => (
+          {/* TOPBAR */}
+
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 p-8 border-b border-white/5">
+
+            <div>
+
+              <p className="text-zinc-500 text-sm mb-2">
+
+                Identity Database
+
+              </p>
+
+              <h2 className="text-3xl font-semibold">
+
+                Student Registry
+
+              </h2>
+
+            </div>
+
+            {/* SEARCH */}
 
             <div
-              key={student.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300"
+              className="
+                flex
+                items-center
+                gap-4
+                bg-black/30
+                rounded-2xl
+                px-5
+                h-14
+                min-w-[320px]
+              "
             >
 
-              {/* ========================== */}
-              {/* IMAGE */}
-              {/* ========================== */}
+              <Search
+                size={18}
+                className="text-zinc-500"
+              />
 
-              <div className="flex justify-center mb-5">
+              <input
+                type="text"
+                placeholder="Search student..."
+                value={search}
+                onChange={(e) =>
+                  setSearch(
+                    e.target.value
+                  )
+                }
+                className="
+                  bg-transparent
+                  outline-none
+                  w-full
+                "
+              />
 
-                <img
+            </div>
 
-                  src={student.image}
+          </div>
 
-                  alt={student.name}
+          {/* EMPTY */}
 
-                  onError={(e) => {
+          {filteredStudents.length === 0 ? (
 
-                    console.log(
-                      "IMAGE LOAD FAILED:",
-                      student.image
-                    );
+            <div className="p-20 text-center">
 
-                    e.target.src =
-                      "https://via.placeholder.com/150?text=No+Image";
+              <div
+                className="
+                  w-24
+                  h-24
+                  rounded-[28px]
+                  bg-white/[0.03]
+                  flex
+                  items-center
+                  justify-center
+                  mx-auto
+                  mb-8
+                "
+              >
 
-                  }}
-
-                  className="w-28 h-28 rounded-3xl object-cover border border-zinc-700 shadow-lg"
-
+                <Users
+                  size={42}
+                  className="text-zinc-500"
                 />
 
               </div>
 
-              {/* ========================== */}
-              {/* NAME */}
-              {/* ========================== */}
+              <h2 className="text-4xl font-semibold">
 
-              <h2 className="text-3xl font-bold text-center">
-
-                {student.name}
+                No Students Found
 
               </h2>
 
-              {/* ========================== */}
-              {/* EMAIL */}
-              {/* ========================== */}
+              <p className="text-zinc-500 mt-4 text-lg">
 
-              <p className="text-gray-400 text-center mt-2 break-all">
-
-                {student.email}
+                Register students to populate
+                the biometric database.
 
               </p>
 
-              {/* ========================== */}
-              {/* DELETE BUTTON */}
-              {/* ========================== */}
+            </div>
 
-              <button
+          ) : (
 
-                onClick={() =>
-                  deleteStudent(student.id)
-                }
+            <div className="divide-y divide-white/5">
 
-                className="w-full mt-8 bg-red-600 hover:bg-red-700 transition-all duration-300 rounded-2xl py-4 font-semibold text-lg"
+              {filteredStudents.map(
+                (student) => (
 
-              >
+                  <div
+                    key={student.id}
+                    className="
+                      p-6
+                      hover:bg-white/[0.02]
+                      transition
+                    "
+                  >
 
-                Delete Student
+                    <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
 
-              </button>
+                      {/* LEFT */}
+
+                      <div className="flex items-center gap-5">
+
+                        {/* IMAGE */}
+
+                        <div className="relative">
+
+                          <img
+                            src={student.image}
+                            alt={student.name}
+                            onError={(e) => {
+
+                              e.target.src =
+                                "https://via.placeholder.com/150";
+
+                            }}
+                            className="
+                              w-24
+                              h-24
+                              rounded-[28px]
+                              object-cover
+                              border
+                              border-white/10
+                            "
+                          />
+
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-400 border-4 border-[#06070A]" />
+
+                        </div>
+
+                        {/* INFO */}
+
+                        <div>
+
+                          <div className="flex items-center gap-3">
+
+                            <h2 className="text-3xl font-semibold">
+
+                              {student.name}
+
+                            </h2>
+
+                            <div
+                              className="
+                                px-3
+                                py-1
+                                rounded-xl
+                                bg-emerald-500/10
+                                text-emerald-400
+                                text-xs
+                                font-medium
+                                border
+                                border-emerald-500/20
+                              "
+                            >
+
+                              VERIFIED
+
+                            </div>
+
+                          </div>
+
+                          <p className="text-zinc-500 mt-3 text-lg">
+
+                            {student.email}
+
+                          </p>
+
+                          <div className="flex items-center gap-6 mt-5">
+
+                            <div className="flex items-center gap-2 text-zinc-400 text-sm">
+
+                              <ShieldCheck size={16} />
+
+                              Recognition Enabled
+
+                            </div>
+
+                            <div className="flex items-center gap-2 text-zinc-400 text-sm">
+
+                              <Activity size={16} />
+
+                              Identity Synced
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      {/* RIGHT */}
+
+                      <div className="flex items-center gap-4">
+
+                        <div className="hidden lg:block text-right">
+
+                          <p className="text-zinc-500 text-sm">
+
+                            Registry Status
+
+                          </p>
+
+                          <h2 className="text-emerald-400 font-semibold mt-2">
+
+                            Active
+
+                          </h2>
+
+                        </div>
+
+                        <button
+                          onClick={() =>
+                            deleteStudent(
+                              student.id
+                            )
+                          }
+                          className="
+                            h-14
+                            px-6
+                            rounded-2xl
+                            bg-red-500/10
+                            border
+                            border-red-500/20
+                            text-red-400
+                            hover:bg-red-500/20
+                            transition
+                            flex
+                            items-center
+                            gap-3
+                            font-medium
+                          "
+                        >
+
+                          <Trash2 size={18} />
+
+                          Delete
+
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                )
+              )}
 
             </div>
 
-          ))}
+          )}
 
         </div>
 
-      )}
+      </div>
 
     </div>
 

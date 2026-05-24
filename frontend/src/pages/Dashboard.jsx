@@ -26,9 +26,9 @@ export default function Dashboard() {
 
   const intervalRef = useRef(null);
 
-  // ====================================
+  // =========================================
   // STATES
-  // ====================================
+  // =========================================
 
   const [person, setPerson] =
     useState("Waiting...");
@@ -37,7 +37,7 @@ export default function Dashboard() {
     useState(0);
 
   const [status, setStatus] =
-    useState("System Active");
+    useState("Monitoring");
 
   const [attendanceLogs, setAttendanceLogs] =
     useState([]);
@@ -51,11 +51,12 @@ export default function Dashboard() {
   const [unknownDetected, setUnknownDetected] =
     useState(false);
 
-  // ====================================
+  // =========================================
   // ANALYTICS
-  // ====================================
+  // =========================================
 
   const analyticsData = [
+
     {
       name: "Mon",
       attendance: 12,
@@ -68,23 +69,24 @@ export default function Dashboard() {
 
     {
       name: "Wed",
-      attendance: 10,
+      attendance: 14,
     },
 
     {
       name: "Thu",
-      attendance: 22,
+      attendance: 21,
     },
 
     {
       name: "Fri",
       attendance: presentToday,
     },
+
   ];
 
-  // ====================================
+  // =========================================
   // FETCH ATTENDANCE
-  // ====================================
+  // =========================================
 
   const fetchAttendance = async () => {
 
@@ -106,17 +108,13 @@ export default function Dashboard() {
 
       console.error(error);
 
-      setAttendanceLogs([]);
-
-      setPresentToday(0);
-
     }
 
   };
 
-  // ====================================
+  // =========================================
   // FETCH STUDENTS
-  // ====================================
+  // =========================================
 
   const fetchStudents = async () => {
 
@@ -136,21 +134,19 @@ export default function Dashboard() {
 
       console.error(error);
 
-      setTotalStudents(0);
-
     }
 
   };
 
-  // ====================================
+  // =========================================
   // CLEAR ATTENDANCE
-  // ====================================
+  // =========================================
 
   const clearAttendance = async () => {
 
     const confirmClear =
       window.confirm(
-        "Clear all attendance records?"
+        "Clear attendance records?"
       );
 
     if (!confirmClear) return;
@@ -165,29 +161,27 @@ export default function Dashboard() {
 
       setPresentToday(0);
 
-      alert("Attendance Cleared");
+      alert("Attendance cleared");
 
     } catch (error) {
 
       console.error(error);
 
-      alert(
-        "Failed to clear attendance"
-      );
+      alert("Failed to clear logs");
 
     }
 
   };
 
-  // ====================================
+  // =========================================
   // CLEAR ALL DATA
-  // ====================================
+  // =========================================
 
   const clearAllData = async () => {
 
     const confirmDelete =
       window.confirm(
-        "Delete ALL students, images and attendance data?"
+        "Delete ALL system data?"
       );
 
     if (!confirmDelete) return;
@@ -208,21 +202,21 @@ export default function Dashboard() {
 
       setConfidence(0);
 
-      alert("All system data deleted");
+      alert("All data deleted");
 
     } catch (error) {
 
       console.error(error);
 
-      alert("Failed to clear data");
+      alert("Failed to delete data");
 
     }
 
   };
 
-  // ====================================
+  // =========================================
   // FACE RECOGNITION
-  // ====================================
+  // =========================================
 
   const recognizeFace = async () => {
 
@@ -234,8 +228,6 @@ export default function Dashboard() {
         webcamRef.current.getScreenshot();
 
       if (!imageSrc) return;
-
-      setStatus("Processing Face...");
 
       const blob = await fetch(imageSrc)
         .then((res) => res.blob());
@@ -261,7 +253,9 @@ export default function Dashboard() {
 
       const data = response.data;
 
-      setPerson(data.person || "Unknown");
+      setPerson(
+        data.person || "Unknown"
+      );
 
       setConfidence(
         Math.round(data.confidence || 0)
@@ -271,17 +265,13 @@ export default function Dashboard() {
 
         setUnknownDetected(true);
 
-        setStatus(
-          "Unknown Face Detected"
-        );
+        setStatus("Unknown Face");
 
       } else {
 
         setUnknownDetected(false);
 
-        setStatus(
-          "Monitoring Active"
-        );
+        setStatus("Monitoring");
 
       }
 
@@ -299,9 +289,9 @@ export default function Dashboard() {
 
   };
 
-  // ====================================
+  // =========================================
   // INITIAL LOAD
-  // ====================================
+  // =========================================
 
   useEffect(() => {
 
@@ -311,9 +301,9 @@ export default function Dashboard() {
 
   }, []);
 
-  // ====================================
+  // =========================================
   // AUTO LOOP
-  // ====================================
+  // =========================================
 
   useEffect(() => {
 
@@ -339,23 +329,35 @@ export default function Dashboard() {
 
   return (
 
-    <div className="min-h-screen bg-[#0B0D11] text-white">
+    <div className="relative min-h-screen bg-[#06070A] text-white overflow-hidden">
 
-      {/* HEADER */}
+      {/* BACKGROUND */}
 
-      <div className="border-b border-white/5 bg-[#0F1115] px-6 lg:px-10 py-5">
+      <div className="absolute inset-0 -z-10 pointer-events-none">
 
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="absolute top-[-250px] left-[-150px] w-[500px] h-[500px] bg-cyan-500/10 blur-[140px]" />
+
+        <div className="absolute bottom-[-250px] right-[-150px] w-[500px] h-[500px] bg-violet-500/10 blur-[140px]" />
+
+      </div>
+
+      {/* CONTENT */}
+
+      <div className="p-6 lg:p-8">
+
+        {/* TOPBAR */}
+
+        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 mb-8">
 
           <div>
 
-            <p className="text-zinc-500 text-sm font-medium">
+            <p className="uppercase tracking-[0.25em] text-zinc-500 text-xs mb-3">
 
-              Enterprise Attendance Platform
+              Attendance Control Center
 
             </p>
 
-            <h1 className="text-3xl font-semibold tracking-tight mt-1">
+            <h1 className="text-4xl font-semibold tracking-tight">
 
               Operations Dashboard
 
@@ -363,11 +365,25 @@ export default function Dashboard() {
 
           </div>
 
+          {/* ACTIONS */}
+
           <div className="flex flex-wrap items-center gap-3">
 
-            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-xl">
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                bg-emerald-500/10
+                border
+                border-emerald-500/20
+                px-4
+                py-3
+                rounded-2xl
+              "
+            >
 
-              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
 
               <span className="text-sm text-emerald-400 font-medium">
 
@@ -381,7 +397,17 @@ export default function Dashboard() {
               href={`${API}/export-attendance`}
               target="_blank"
               rel="noreferrer"
-              className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-medium hover:opacity-90 transition"
+              className="
+                px-5
+                py-3
+                rounded-2xl
+                bg-white
+                text-black
+                font-semibold
+                text-sm
+                hover:scale-105
+                transition
+              "
             >
 
               Export CSV
@@ -390,7 +416,19 @@ export default function Dashboard() {
 
             <button
               onClick={clearAttendance}
-              className="bg-red-500/10 border border-red-500/20 text-red-400 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-red-500/20 transition"
+              className="
+                px-5
+                py-3
+                rounded-2xl
+                bg-red-500/10
+                border
+                border-red-500/20
+                text-red-400
+                font-medium
+                text-sm
+                hover:bg-red-500/20
+                transition
+              "
             >
 
               Clear Logs
@@ -399,94 +437,22 @@ export default function Dashboard() {
 
             <button
               onClick={clearAllData}
-              className="bg-red-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-red-700 transition"
+              className="
+                px-5
+                py-3
+                rounded-2xl
+                bg-red-600
+                text-white
+                font-medium
+                text-sm
+                hover:bg-red-700
+                transition
+              "
             >
 
-              Delete All Data
+              Delete Data
 
             </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* MAIN */}
-
-      <div className="p-6 lg:p-10">
-
-        {/* STATS */}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
-
-          <div className="bg-[#111318] border border-white/5 rounded-2xl p-5">
-
-            <p className="text-zinc-500 text-sm">
-
-              Registered Students
-
-            </p>
-
-            <h2 className="text-3xl font-semibold mt-3">
-
-              {totalStudents}
-
-            </h2>
-
-          </div>
-
-          <div className="bg-[#111318] border border-white/5 rounded-2xl p-5">
-
-            <p className="text-zinc-500 text-sm">
-
-              Present Today
-
-            </p>
-
-            <h2 className="text-3xl font-semibold mt-3 text-emerald-400">
-
-              {presentToday}
-
-            </h2>
-
-          </div>
-
-          <div className="bg-[#111318] border border-white/5 rounded-2xl p-5">
-
-            <p className="text-zinc-500 text-sm">
-
-              Recognition Accuracy
-
-            </p>
-
-            <h2 className="text-3xl font-semibold mt-3">
-
-              {confidence}%
-
-            </h2>
-
-          </div>
-
-          <div className="bg-[#111318] border border-white/5 rounded-2xl p-5">
-
-            <p className="text-zinc-500 text-sm">
-
-              Monitoring State
-
-            </p>
-
-            <h2
-              className={`text-xl font-semibold mt-3 ${
-                unknownDetected
-                  ? "text-red-400"
-                  : "text-emerald-400"
-              }`}
-            >
-
-              {status}
-
-            </h2>
 
           </div>
 
@@ -498,43 +464,156 @@ export default function Dashboard() {
 
           {/* CAMERA */}
 
-          <div className="xl:col-span-7 bg-[#111318] border border-white/5 rounded-2xl overflow-hidden">
+          <div className="xl:col-span-8">
 
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
+            <div
+              className="
+                relative
+                overflow-hidden
+                rounded-[30px]
+                bg-black
+                min-h-[620px]
+              "
+            >
 
-              <div>
+              {/* WEBCAM */}
 
-                <h2 className="text-lg font-semibold">
+              <Webcam
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                mirrored={true}
+                className="
+                  absolute
+                  inset-0
+                  w-full
+                  h-full
+                  object-cover
+                "
+                videoConstraints={{
+                  width: 1280,
+                  height: 720,
+                  facingMode: "user",
+                }}
+              />
 
-                  Live Recognition Monitor
+              {/* OVERLAY */}
 
-                </h2>
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
 
-                <p className="text-zinc-500 text-sm mt-1">
+              {/* TOP HUD */}
 
-                  Real-time facial verification stream
+              <div className="absolute top-5 left-5 right-5 z-20 flex items-center justify-between">
 
-                </p>
+                <div
+                  className="
+                    bg-black/40
+                    backdrop-blur-xl
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                    rounded-2xl
+                    flex
+                    items-center
+                    gap-3
+                  "
+                >
+
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+
+                  <span className="text-sm font-medium">
+
+                    Live Recognition Feed
+
+                  </span>
+
+                </div>
+
+                <div
+                  className="
+                    bg-black/40
+                    backdrop-blur-xl
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                    rounded-2xl
+                    text-sm
+                  "
+                >
+
+                  1280 × 720
+
+                </div>
 
               </div>
 
-            </div>
+              {/* FACE INFO */}
 
-            <div className="p-4">
+              <div className="absolute bottom-5 left-5 z-20">
 
-              <div className="relative rounded-2xl overflow-hidden border border-white/5">
+                <div
+                  className="
+                    bg-black/50
+                    backdrop-blur-2xl
+                    border
+                    border-white/10
+                    rounded-[26px]
+                    p-6
+                    min-w-[340px]
+                  "
+                >
 
-                <Webcam
-                  ref={webcamRef}
-                  screenshotFormat="image/jpeg"
-                  mirrored={true}
-                  className="w-full rounded-2xl"
-                  videoConstraints={{
-                    width: 1280,
-                    height: 720,
-                    facingMode: "user",
-                  }}
-                />
+                  <p className="text-zinc-400 text-sm mb-2">
+
+                    Current Recognition
+
+                  </p>
+
+                  <h2 className="text-5xl font-semibold">
+
+                    {person}
+
+                  </h2>
+
+                  <div className="mt-6">
+
+                    <div className="flex justify-between text-sm mb-2">
+
+                      <span className="text-zinc-400">
+
+                        Confidence
+
+                      </span>
+
+                      <span>
+
+                        {confidence}%
+
+                      </span>
+
+                    </div>
+
+                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+
+                      <div
+                        className="
+                          h-full
+                          rounded-full
+                          bg-gradient-to-r
+                          from-cyan-400
+                          to-blue-500
+                        "
+                        style={{
+                          width: `${confidence}%`,
+                        }}
+                      />
+
+                    </div>
+
+                  </div>
+
+                </div>
 
               </div>
 
@@ -542,52 +621,65 @@ export default function Dashboard() {
 
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT PANEL */}
 
-          <div className="xl:col-span-5 space-y-6">
+          <div className="xl:col-span-4 space-y-6">
 
-            {/* CURRENT */}
+            {/* STATUS */}
 
-            <div className="bg-[#111318] border border-white/5 rounded-2xl p-6">
+            <div className="bg-white/[0.03] rounded-[26px] p-6">
 
               <p className="text-zinc-500 text-sm">
 
-                Current Recognition
+                Monitoring Status
 
               </p>
 
-              <h2 className="text-3xl font-semibold mt-3">
+              <h2
+                className={`text-3xl font-semibold mt-4 ${
+                  unknownDetected
+                    ? "text-red-400"
+                    : "text-emerald-400"
+                }`}
+              >
 
-                {person}
+                {unknownDetected
+                  ? "Unknown Face"
+                  : "Monitoring Active"}
 
               </h2>
 
-              <div className="mt-6">
+              <div className="grid grid-cols-2 gap-4 mt-8">
 
-                <div className="flex justify-between mb-2 text-sm">
+                <div className="bg-black/30 rounded-2xl p-4">
 
-                  <span className="text-zinc-500">
+                  <p className="text-zinc-500 text-sm">
 
-                    Confidence
+                    Students
 
-                  </span>
+                  </p>
 
-                  <span>
+                  <h3 className="text-3xl font-semibold mt-3">
 
-                    {confidence}%
+                    {totalStudents}
 
-                  </span>
+                  </h3>
 
                 </div>
 
-                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                <div className="bg-black/30 rounded-2xl p-4">
 
-                  <div
-                    className="h-full bg-emerald-400 rounded-full"
-                    style={{
-                      width: `${confidence}%`,
-                    }}
-                  />
+                  <p className="text-zinc-500 text-sm">
+
+                    Present
+
+                  </p>
+
+                  <h3 className="text-3xl font-semibold mt-3 text-emerald-400">
+
+                    {presentToday}
+
+                  </h3>
 
                 </div>
 
@@ -595,46 +687,73 @@ export default function Dashboard() {
 
             </div>
 
-            {/* RECENT ACTIVITY */}
+            {/* ACTIVITY */}
 
-            <div className="bg-[#111318] border border-white/5 rounded-2xl p-6">
+            <div className="bg-white/[0.03] rounded-[26px] p-6">
 
-              <h2 className="text-lg font-semibold mb-6">
+              <div className="flex items-center justify-between mb-6">
 
-                Recent Activity
+                <div>
 
-              </h2>
+                  <h2 className="text-2xl font-semibold">
 
-              <div className="space-y-4 max-h-[320px] overflow-y-auto">
+                    Recent Activity
+
+                  </h2>
+
+                  <p className="text-zinc-500 text-sm mt-1">
+
+                    Live attendance feed
+
+                  </p>
+
+                </div>
+
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+
+              </div>
+
+              <div className="space-y-5 max-h-[420px] overflow-y-auto pr-2">
 
                 {attendanceLogs.length > 0 ? (
 
                   attendanceLogs
-                    .slice(0, 6)
+                    .slice(0, 10)
                     .map((log, index) => (
 
                       <div
                         key={index}
-                        className="flex items-start gap-4"
+                        className="
+                          flex
+                          items-start
+                          justify-between
+                          border-b
+                          border-white/5
+                          pb-4
+                        "
                       >
-
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 mt-2" />
 
                         <div>
 
-                          <p className="text-sm font-medium">
+                          <p className="font-medium text-lg">
 
                             {log.name}
 
                           </p>
 
-                          <p className="text-zinc-500 text-xs mt-1">
+                          <p className="text-zinc-500 text-sm mt-1">
 
-                            {log.time}
+                            Attendance verified
 
                           </p>
 
                         </div>
+
+                        <span className="text-zinc-500 text-sm">
+
+                          {log.time}
+
+                        </span>
 
                       </div>
 
@@ -658,46 +777,78 @@ export default function Dashboard() {
 
         </div>
 
-        {/* CHART */}
+        {/* ANALYTICS */}
 
-        <div className="bg-[#111318] border border-white/5 rounded-2xl p-6">
+        <div className="bg-white/[0.03] rounded-[30px] p-8">
 
-          <div className="mb-6">
+          <div className="flex items-center justify-between mb-10">
 
-            <h2 className="text-xl font-semibold">
+            <div>
 
-              Attendance Analytics
+              <p className="text-zinc-500 text-sm mb-2">
 
-            </h2>
+                Weekly Monitoring
 
-            <p className="text-zinc-500 text-sm mt-1">
+              </p>
 
-              Weekly attendance overview
+              <h2 className="text-3xl font-semibold">
 
-            </p>
+                Attendance Analytics
+
+              </h2>
+
+            </div>
+
+            <div className="flex items-center gap-2">
+
+              <div className="w-2 h-2 rounded-full bg-cyan-400" />
+
+              <span className="text-zinc-400 text-sm">
+
+                Live Data
+
+              </span>
+
+            </div>
 
           </div>
 
-          <div className="w-full h-[400px] min-w-0">
+          <div className="w-full h-[380px]">
 
             <ResponsiveContainer width="100%" height="100%">
 
               <BarChart data={analyticsData}>
 
                 <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="#1f2937"
+                  vertical={false}
+                  stroke="#18181B"
                 />
 
-                <XAxis dataKey="name" />
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  stroke="#71717A"
+                />
 
-                <YAxis />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  stroke="#71717A"
+                />
 
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{
+                    background: "#111318",
+                    border: "1px solid #27272A",
+                    borderRadius: "14px",
+                  }}
+                />
 
                 <Bar
                   dataKey="attendance"
-                  radius={[8, 8, 0, 0]}
+                  radius={[12, 12, 0, 0]}
+                  fill="#22D3EE"
                 />
 
               </BarChart>
