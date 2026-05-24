@@ -1,0 +1,26 @@
+# Python
+
+__pycache__/
+*.pyc
+.venv/
+
+# Database
+
+*.db
+
+# Uploads
+
+backend/uploads/
+backend/unknown_faces/
+
+# Node
+
+node_modules/
+
+# Env
+
+.env
+
+# Vite
+
+dist/
