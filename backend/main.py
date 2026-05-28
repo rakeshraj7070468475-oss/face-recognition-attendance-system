@@ -27,6 +27,11 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 TEACHER_EMAIL = os.getenv("TEACHER_EMAIL")
 
+BASE_URL = os.getenv(
+    "BASE_URL",
+    "http://127.0.0.1:8000"
+)
+
 # =========================================
 # FASTAPI
 # =========================================
@@ -41,10 +46,10 @@ app.add_middleware(
     CORSMiddleware,
 
     allow_origins=[
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://facialrecognitionattendance.netlify.app",
-],
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://facerecognitionsystema.netlify.app",
+    ],
 
     allow_credentials=True,
 
@@ -443,7 +448,7 @@ async def register_student(
         )
 
         # =================================
-        # READ FILE ONCE
+        # READ FILE
         # =================================
 
         contents = await file.read()
@@ -457,7 +462,7 @@ async def register_student(
             buffer.write(contents)
 
         # =================================
-        # SAVE KNOWN FACE IMAGE
+        # SAVE KNOWN IMAGE
         # =================================
 
         with open(known_path, "wb") as buffer:
@@ -512,7 +517,10 @@ async def register_student(
 
     except Exception as e:
 
-        print("REGISTER ERROR:", e)
+        print(
+            "REGISTER ERROR:",
+            e
+        )
 
         return {
 
@@ -928,7 +936,7 @@ def get_students():
                 "email": row[2],
 
                 "image":
-                f"http://127.0.0.1:8000/uploads/{row[3]}?t={datetime.now().timestamp()}"
+                f"{BASE_URL}/uploads/{row[3]}?t={datetime.now().timestamp()}"
 
             })
 
